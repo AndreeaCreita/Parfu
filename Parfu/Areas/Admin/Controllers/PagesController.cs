@@ -54,11 +54,12 @@ namespace Parfu.Areas.Admin.Controllers
 
         //POST / admin/ pages/ create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Page page) //id e route parameter din Index.cshtml
         {
             if(ModelState.IsValid)
             {
-                page.Slug = page.Title.ToLower().ToLower().Replace(" ", "-");
+                page.Slug = page.Title.ToLower().Replace(" ", "-");
                 page.Sorting = 100;
 
                 var slug = await context.Pages.FirstOrDefaultAsync(x => x.Slug == page.Slug);
@@ -72,7 +73,7 @@ namespace Parfu.Areas.Admin.Controllers
                 context.Add(page);
                 await context.SaveChangesAsync();
 
-                TempData["Succes"] = "The page has been added!";
+                TempData["Success"] = "The page has been added!";
                 return RedirectToAction("Index");
 
 
@@ -101,7 +102,7 @@ namespace Parfu.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                page.Slug = page.Id ==1 ? "home" : page.Title.ToLower().ToLower().Replace(" ", "-");
+                page.Slug = page.Id == 1 ? "home" : page.Title.ToLower().Replace(" ", "-");
 
                 
 
@@ -116,7 +117,7 @@ namespace Parfu.Areas.Admin.Controllers
                 context.Update(page);
                 await context.SaveChangesAsync();
 
-                TempData["Succes"] = "The page has been edited!";
+                TempData["Success"] = "The page has been edited!";
                 return RedirectToAction("Edit", new { id = page.Id });
 
 
@@ -145,6 +146,31 @@ namespace Parfu.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
+
+
+
+        //POST / admin/ pages/ reorder
+        [HttpPost]
+        
+        public async Task<IActionResult> Reorder(int[] id) //id e route parameter din Index.cshtml
+        {
+            int count = 1;
+            //home e mereu 0 deci incepe de la 1
+            foreach(var pageId in id)
+            {
+                Page page = await context.Pages.FindAsync(pageId);
+                page.Sorting = count;
+                context.Update(page);
+                await context.SaveChangesAsync();
+                count++;
+                
+            }
+            return Ok();
+
+        }
+
+           
+        
 
     }
 }
