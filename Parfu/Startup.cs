@@ -25,6 +25,12 @@ namespace Parfu
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.AddSession(options =>
+            {
+                //options.IdleTimeout = TimeSpan.FromSeconds(2)
+                //options.IdleTimeout = TimeSpan.FromDays(2)
+            });
             services.AddControllersWithViews();
             //A dependency is an object that can be used (for exemple as a service)
             //It is any object that another object requires
@@ -51,13 +57,29 @@ namespace Parfu
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                //goes from most specific to least specific
+                //frontend Pages-> pagina de pornire
+                endpoints.MapControllerRoute(
+                    "pages", 
+                    "{slug?}",
+                    defaults: new {controller = "Pages", action = "Page"}
+                   );
+
+                endpoints.MapControllerRoute(
+                    "products", 
+                    "products/{categorySlug}",
+                    defaults: new { controller = "Products", action = "ProductsByCategory" }
+                   );
+
+
                 //ia din Areas / Admin 
-               endpoints.MapControllerRoute(
+                endpoints.MapControllerRoute(
                name: "areas",
                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
              );
