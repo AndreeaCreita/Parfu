@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Parfu.Infrastructure;
+using Parfu.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,16 @@ namespace Parfu
 
             //register services and dependencies in the configureService method
             services.AddDbContext<ParfuContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ParfuContext")));
+
+            services.AddIdentity<AppUser, IdentityRole>(options => {
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            })
+                                .AddEntityFrameworkStores<ParfuContext>()
+                                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +71,9 @@ namespace Parfu
             app.UseRouting();
             app.UseSession();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {

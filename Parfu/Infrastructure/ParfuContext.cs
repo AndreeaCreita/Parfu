@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Parfu.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Parfu.Infrastructure
 {
-    public class ParfuContext : DbContext
+    public class ParfuContext : IdentityDbContext<AppUser>
     {
         //constructor
         public ParfuContext(DbContextOptions<ParfuContext> options)
