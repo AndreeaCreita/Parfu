@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CmsShoppingCart.Infrastructure
+namespace Parfu.Infrastructure
 {
     public class FileExtensionAttribute : ValidationAttribute
     {

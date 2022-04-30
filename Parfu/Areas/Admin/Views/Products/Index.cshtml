@@ -12,11 +12,12 @@
 <table class="table">
     <thead>
         <tr>
-           
+            
             <th>
                 Name
             </th>
-          
+           
+           
             <th>
                 Price
             </th>
@@ -32,33 +33,32 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-          
+            
             <td>
                 @item.Name
             </td>
+            
           
             <td>
-                @item.Price
+                @item.Price.ToString("C2")
             </td>
             <td>
                 @item.Category.Name
             </td>
             <td>
-                image
+                <img src="~/media/products/@item.Image" width="100" alt="" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (item.Slug != "home")
-                {
-                    <a class="confirmDeletion" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
+                <a class="confirmDeletion" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+               
+
             </td>
         </tr>
 }
     </tbody>
 </table>
-
 
 <div class="d-flex w-100 justify-content-center">
     <pagination page-count="@ViewBag.TotalPages" page-target="/admin/products" page-number="@ViewBag.PageNumber" page-range="@ViewBag.PageRange"></pagination>
