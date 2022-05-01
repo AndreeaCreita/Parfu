@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Parfu.Infrastructure;
 using Parfu.Models;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Parfu.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "admin, editor")]
     //controllers in mvc are c# classes that extends controllers
     [Area("Admin")]
     public class PagesController : Controller

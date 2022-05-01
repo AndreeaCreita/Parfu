@@ -14,12 +14,15 @@ namespace Parfu.Controllers
     {
         private readonly UserManager<AppUser> userManager;
         private readonly SignInManager<AppUser> signInManager;
+        private IPasswordHasher<AppUser> passwordHasher;
 
         public AccountController(UserManager<AppUser> userManager,
-                                SignInManager<AppUser> signInManager)
+                                SignInManager<AppUser> signInManager,
+                                IPasswordHasher<AppUser> passwordHasher)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.passwordHasher = passwordHasher;
         }
 
         // GET /account/register
@@ -90,6 +93,50 @@ namespace Parfu.Controllers
 
             return View(login);
         }
+
+        // GET /account/logout
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+
+            return Redirect("/");
+        }
+
+        // GET /account/edit
+        public async Task<IActionResult> Edit()
+        {
+            AppUser appUser = await userManager.FindByNameAsync(User.Identity.Name);
+            UserEdit user = new UserEdit(appUser);
+
+            return View(user);
+        }
+
+        // POST /account/edit
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UserEdit user)
+        {
+            AppUser appUser = await userManager.FindByNameAsync(User.Identity.Name);
+
+            if (ModelState.IsValid)
+            {
+                appUser.Email = user.Email;
+                if (user.Password != null)
+                {
+                    appUser.PasswordHash = passwordHasher.HashPassword(appUser, user.Password);
+                }
+
+                IdentityResult result = await userManager.UpdateAsync(appUser);
+                if (result.Succeeded)
+                    TempData["Success"] = "Your information has been edited!";
+            }
+
+            return View();
+        }
+
+
+
 
     }
 }

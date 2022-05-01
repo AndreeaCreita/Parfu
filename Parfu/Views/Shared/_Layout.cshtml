@@ -21,12 +21,28 @@
 
 
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
-                        <li class="nav-item">
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-success">Log in</a>
-                        </li>
-                        <li class="nav-item ml-1">
-                            <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Register in</a>
-                        </li>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Account" asp-action="Edit" class="btn btn-primary">My Account</a>
+                            </li>
+
+                            <li class="nav-item ml-1" >
+                                <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Hi, @User.Identity.Name , Log out</a>
+                            </li>
+
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-success">Log in</a>
+                            </li>
+                            <li class="nav-item ml-1">
+                                <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Register in</a>
+                            </li>
+                        }
+
 
                     </ul>
 
@@ -44,6 +60,8 @@
     <div class="container">
         <main role="main" class="pb-3">
            
+            <partial name="_NotificationPartial" />
+
             <div class="row">
                 <div class="col-3">
                     @await Component.InvokeAsync("Categories")
