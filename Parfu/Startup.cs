@@ -33,6 +33,8 @@ namespace Parfu
                 //options.IdleTimeout = TimeSpan.FromSeconds(2)
                 //options.IdleTimeout = TimeSpan.FromDays(2)
             });
+            services.AddRouting(options => options.LowercaseUrls = true); //in url sa apara toate paginile cu litera mica
+
             services.AddControllersWithViews();
             //A dependency is an object that can be used (for exemple as a service)
             //It is any object that another object requires
